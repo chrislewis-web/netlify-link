@@ -1,9 +1,9 @@
 /* code from functions/todos-read-all.js */
-const faunadb = require('node_modules\faunadb');
+const faunadb = require('node_modules/faunadb');
 
 const q = faunadb.query;
 const client = new faunadb.Client({
-  secret: fnADhPCkZfACE83iqAPR2Q215kuLMUW3xVEHZBvC
+  secret: "fnADhPCkZfACE83iqAPR2Q215kuLMUW3xVEHZBvC"
 })
 
 exports.handler = (event, context, callback) => {
