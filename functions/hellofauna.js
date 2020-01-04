@@ -1,5 +1,5 @@
 /* code from functions/todos-read-all.js */
-const faunadb = require('faunadb');
+const faunadb = require('node_modules\faunadb');
 
 const q = faunadb.query;
 const client = new faunadb.Client({
