@@ -1,7 +1,7 @@
 /* code from functions/todos-read-all.js */
-import faunadb from 'faunadb'
+const faunadb = require('faunadb');
 
-const q = faunadb.query
+const q = faunadb.query;
 const client = new faunadb.Client({
   secret: fnADhPCkZfACE83iqAPR2Q215kuLMUW3xVEHZBvC
 })
