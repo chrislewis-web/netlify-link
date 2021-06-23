@@ -26,7 +26,7 @@
       "resolved": "https://registry.npmjs.org/dotenv/-/dotenv-8.2.0.tgz",
       "version": "8.2.0"
     },
-    "faunadb": "^2.10.2",
+    "faunadb": "^2.14.1",
     "fn-annotate": {
       "integrity": "sha1-KNoAARfephhC/mHzU/Qc9Mk6en4=",
       "resolved": "https://registry.npmjs.org/fn-annotate/-/fn-annotate-1.2.0.tgz",
