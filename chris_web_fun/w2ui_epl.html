@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="http://w2ui.com/src/w2ui-1.5.min.css" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://w2ui.com/src/w2ui-1.5.min.js"></script>
+	<script>
+	var Storage = window.localStorage;
+	//alert (Storage.length);
+	var parts = new Array();
+	var idx = 1;
+
+	for (var i=0;i<10;i++)
+	{
+		const key = Storage.key(i);
+		if (key.indexOf('part_')>-1)
+		{
+			var localDBItem = JSON.parse(Storage.getItem(key));
+			localDBItem.recid = idx;
+			parts[parts.length] = localDBItem;
+			idx++;
+		}
+	}
+	
+	var Taxonomies = [
+		"Top###Hex Head Bolt",
+		"Top###Hex Head Bolt",
+		"Top###Cheese Head Bolt",
+		"Top###Socket Head Bolt",
+		"Top###Socket Head Bolt###Sub Category"	
+	];
+	</script>
+</head>
+<body>
+<div id="header" style="height: 50px"><H1>EPL 3.0</H1></div>
+	<div id="layout" style="height: 200px"></div>
+
+
+    
+</body>
+<script>
+function resizeToScreen(){
+document.getElementById("layout").style.height = (window.innerHeight-100)+"px";
+}
+resizeToScreen();
+window.onresize = resizeToScreen;
+
+var pstyle = 'background-color: #F5F6F7; border: 1px solid #dfdfdf; padding: 5px;';
+
+var config = {
+    layout: {
+        name: 'layout',
+        padding: 0,
+        panels: [
+            { type: 'top',  size: 50, resizable: false, style: pstyle, content: 'top' },
+            { type: 'left', size: 200, resizable: true, style: pstyle, content: 'left'},
+            { type: 'main', style: pstyle, content: 'main'}
+        ]
+    }};
+
+$('#layout').w2layout(config.layout);
+
+
+
+
+
+config.grid1 = 
+    {
+        name: 'grid',
+        header: 'List of Parts',
+		recordHeight: 40,
+		show: { 
+            toolbar: true,
+			footer: true,
+			},
+		multiSort : true,
+		multiSearch: true,
+        searches: [
+            { field: 'sourcingProps.preferredStatus', caption: 'Sourcing Strategy', type: 'list', options: { items: ['Preferred', 'Not Pref']} }
+        ],
+        columns: [
+            { field: 'number', caption: 'Part Number', size: '30%', frozen: true },
+            { field: 'description', caption: 'Part Description', size: '30%' },
+			{ field: 'plmProps.revision', caption: 'Rev', size: '50px' },
+			{ field: 'plmProps.state', caption: 'LC State', size: '10%' },
+			{ field: 'path', caption: 'Path', size: '30%' },
+			{ field: 'sourcingProps.preferredStatus', caption: 'Status', size: '100px', sortable       : true, 
+                render: function (record, index, column_index) {
+				    var styletxt = "";
+					if (record.sourcingProps.preferredStatus=="Preferred"){
+						styletxt = "background-color: green";
+					}
+					
+                    var html = "<div style=\""+styletxt+"\">"+ record.sourcingProps.preferredStatus + "</div>";
+                    return html;
+                } 
+            },
+			
+        ],
+        records: parts
+    };
+	
+	//alert (gridConfig.name);
+
+
+
+w2ui.layout.content('main', $().w2grid(config.grid1));
+
+config.navigation = {
+	name: 'toolbar',
+	items: [
+		{ type: 'button',  id: 'item5',  caption: 'Item 5' },
+		{ type: 'button',  id: 'item6',  caption: 'Item 6' }
+	]
+}
+
+var tmp = new Array();
+tmp[0] = { type: 'button',  id: 'TOP',  caption: 'Top' };
+level = 1;
+for (var i=0;i<Taxonomies.length;i++)
+{
+	var curTaxonomy = Taxonomies[i];
+	var bits = curTaxonomy.split("###");
+	var newItem = new Object();
+	newItem.type = 'button';
+	newItem.id = curTaxonomy;
+	newItem.caption = bits[level];
+	if (bits.length==level+1)
+	tmp[tmp.length] = newItem;
+}
+
+tmp[tmp.length] = {type: 'html', id: 'demo', caption: 'hello world', html: '<div style=\"padding: 3px 10px;\"><img src=fun.png onclick=filter(\"demo\")></div>'}
+
+config.navigation.items = tmp;
+
+
+w2ui.layout.content('top', $().w2toolbar(config.navigation));
+
+w2ui.toolbar.on('click', function (event) {
+        filter(event.target);
+    });
+
+
+for (var i=10;i<20;i++)
+{
+	var g = w2ui['grid'].records.length;
+	const key = Storage.key(i);
+	if (key.indexOf('part_')>-1)
+	{
+		var localDBItem = JSON.parse(Storage.getItem(key));
+		localDBItem.recid = g+1;
+		parts[parts.length] = localDBItem;
+		idx++;
+		w2ui['grid'].add(localDBItem);
+		
+	}
+}
+
+for (var i=21;i<10000;i++)
+{
+	var g = w2ui['grid'].records.length;
+	const key = Storage.key(i);
+	if (key.indexOf('part_')>-1)
+	{
+		var localDBItem = JSON.parse(Storage.getItem(key));
+		localDBItem.recid = g+1;
+		parts[parts.length] = localDBItem;
+		idx++;
+	}
+}
+
+
+
+
+
+w2ui['grid'].addColumn({ field: 'taxProps.thread', caption: 'Thread', size: '80px' });
+w2ui['grid'].addColumn({ field: 'taxProps.length', caption: 'Length', size: '80px' , searchable: 'int', sortable       : true });
+w2ui['grid'].addColumn({ field: 'taxProps.material', caption: 'Material', size: '100px' });
+
+
+
+w2ui['grid'].searches[1] = { field: 'taxProps.thread', caption: 'Thread', type: 'text' };
+w2ui['grid'].searches[2] = { field: 'taxProps.length', caption: 'Length', type: 'int' };
+
+w2ui['grid'].clear();
+		w2ui.grid.records = parts;
+		w2ui.grid.total = parts.length;
+		w2ui.grid.refresh();
+		
+function filter(button){
+if (button=="demo")
+alert ("boo yah");
+	var curRecords = w2ui['grid'].records;
+	if (button=="TOP")
+	{
+	w2ui['grid'].clear();
+		w2ui.grid.records = parts;
+		w2ui.grid.total = parts.length;
+		w2ui.grid.refresh();
+		return;
+	}
+	
+
+		
+		var RecordsToShow = new Array();
+		for (var i=0;i<parts.length;i++)
+		{
+			if (parts[i].path.indexOf(button)>-1){
+				RecordsToShow[RecordsToShow.length] = parts[i];
+			}
+		}
+		w2ui['grid'].clear();
+		w2ui.grid.records = RecordsToShow;
+		w2ui.grid.total = RecordsToShow.length;
+		w2ui.grid.refresh();
+}
+
+
+</script>
+</html>

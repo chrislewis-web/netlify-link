@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="http://w2ui.com/src/w2ui-1.5.min.css" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://w2ui.com/src/w2ui-1.5.min.js"></script>
+	<script>
+	var Storage = window.localStorage;
+//alert (Storage.length);
+var parts = new Array();
+var idx = 1;
+
+for (var i=0;i<10;i++)
+{
+	const key = Storage.key(i);
+	if (key.indexOf('part_')>-1)
+	{
+		var localDBItem = JSON.parse(Storage.getItem(key));
+		localDBItem.recid = idx;
+		parts[parts.length] = localDBItem;
+		idx++;
+	}
+}
+	</script>
+</head>
+<body>
+	<div id="main" style="height: 400px"></div>
+</body>
+
+<body>
+    
+</body>
+<script>
+var config = {
+    layout: {
+        name: 'layout',
+        padding: 0,
+        panels: [
+            { type: 'top', size: 60 },
+            { type: 'left', size: 50, resizable: true },
+            { type: 'right', size: 350, resizable: true }
+        ]
+    }};
+
+$('#main').w2layout(config.layout);
+
+
+
+
+
+config.grid1 = 
+    {
+        name: 'grid',
+        header: 'List of Parts',
+		show: { 
+            toolbar: true,
+			},
+        columns: [
+            { field: 'number', caption: 'Part Number', size: '30%' },
+            { field: 'description', caption: 'Part Description', size: '30%' }
+			
+        ],
+        records: parts
+    };
+	
+	//alert (gridConfig.name);
+
+w2ui.layout.content('right', $().w2grid(config.grid1));
+
+config.navigation = {
+	name: 'toolbar',
+	items: [
+		{ type: 'button',  id: 'item5',  caption: 'Item 5' },
+		{ type: 'button',  id: 'item6',  caption: 'Item 6' }
+	]
+}
+w2ui.layout.content('top', $().w2toolbar(config.navigation));
+
+w2ui.toolbar.on('click', function (event) {
+        filter(event.target);
+    });
+
+
+for (var i=10;i<20;i++)
+{
+	var g = w2ui['grid'].records.length;
+	const key = Storage.key(i);
+	if (key.indexOf('part_')>-1)
+	{
+		var localDBItem = JSON.parse(Storage.getItem(key));
+		localDBItem.recid = g+1;
+		parts[parts.length] = localDBItem;
+		idx++;
+		w2ui['grid'].add(localDBItem);
+		
+	}
+}
+
+for (var i=21;i<10000;i++)
+{
+	var g = w2ui['grid'].records.length;
+	const key = Storage.key(i);
+	if (key.indexOf('part_')>-1)
+	{
+		var localDBItem = JSON.parse(Storage.getItem(key));
+		localDBItem.recid = g+1;
+		parts[parts.length] = localDBItem;
+		idx++;
+	}
+}
+
+
+
+
+
+w2ui['grid'].addColumn({ field: 'taxProps.thread', caption: 'Thread', size: '30%' });
+
+
+		
+function filter(button){
+	if (button=="item6"){
+		var curRecords = w2ui['grid'].records;
+		var RecordsToShow = newArray();
+		for (var i=0;i<curRecords.length;i++)
+		{
+			if (curRecords[i].description.indexOf("5")>-1){
+				RecordsToShow[RecordsToShow.length] = curRecords[i];
+			}
+		}
+		w2ui['grid'].clear();
+		w2ui.grid.records = RecordsToShow;
+		w2ui.grid.total = RecordsToShow.length;
+		w2ui.grid.refresh();
+	}
+	
+	if (button=="item5"){
+		w2ui['grid'].clear();
+		w2ui.grid.records = parts;
+		w2ui.grid.total = parts.length;
+		w2ui.grid.refresh();
+	}
+}
+
+
+</script>
+</html>

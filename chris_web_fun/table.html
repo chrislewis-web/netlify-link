@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="http://w2ui.com/src/w2ui-1.5.min.css" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://w2ui.com/src/w2ui-1.5.min.js"></script>
+</head>
+<body>
+    <div id="grid" style="width: 100%; height: 250px;"></div>
+</body>
+<script>
+
+var Storage = window.localStorage;
+//alert (Storage.length);
+var parts = new Array();
+var idx = 1;
+
+for (var i=0;i<Storage.length;i++)
+{
+	const key = Storage.key(i);
+	if (key.indexOf('part_')>-1)
+	{
+		var localDBItem = JSON.parse(Storage.getItem(key));
+		localDBItem.recid = idx;
+		parts[parts.length] = localDBItem;
+		idx++;
+	}
+}
+//alert (parts.length)
+
+$(function () {
+    $('#grid').w2grid({
+        name: 'grid',
+        header: 'List of Parts',
+        columns: [
+            { field: 'number', caption: 'Part Number', size: '30%' },
+            { field: 'description', caption: 'Part Description', size: '30%' }
+        ],
+        records: parts
+    });
+});
+</script>
+</html>

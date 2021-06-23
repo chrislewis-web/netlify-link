@@ -1,0 +1,41 @@
+<html>
+<body>
+<input type=button onclick="setVal()" value="Set Val">
+<input type=button onclick="retVal()" value="Ret Val">
+<div id=result></div>
+<script>
+
+var Storage = window.localStorage;
+if (typeof(Storage) !== "undefined") {
+  // Code for localStorage/sessionStorage.
+  alert ("here");
+} else {
+  // Sorry! No Web Storage support..
+}
+
+const person = {
+    name: "Obaseki Nosa",
+    location: "Lagos",
+}
+
+window.localStorage.setItem('user', JSON.stringify(person));
+
+function setVal(){
+localStorage.setItem("lastname", "Smith");
+}
+
+function retVal(){
+// Retrieve
+document.getElementById("result").innerHTML = localStorage.getItem("user");
+}
+
+const test = "hello";
+const me = "world";
+alert (` ${ test } : ${ me } `);
+document.getElementById("result").innerHTML = "test";
+
+</script>
+
+</body>
+
+</html>
